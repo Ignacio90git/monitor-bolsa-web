@@ -5,16 +5,32 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Monitor Bolsa</title>
     <style>
-        html, body { margin: 0; padding: 0; width: 100%; height: 100%; }
+        html, body { margin: 0; padding: 0; width: 100%; height: 100%; overflow: hidden; }
         body { background: #0f1115; }
-        #compose-root { width: 100vw; height: 100vh; }
-        #compose-root canvas { display: block; outline: none; }
-        #loading { color: #8ab4f8; font-family: sans-serif; display: flex;
-            align-items: center; justify-content: center; height: 100vh; }
+        #compose-root { position: fixed; inset: 0; }
+        #compose-root canvas { display: block; width: 100%; height: 100%; outline: none; }
+        #loading { position: fixed; inset: 0; color: #8ab4f8; font-family: sans-serif;
+            display: flex; align-items: center; justify-content: center;
+            flex-direction: column; text-align: center; z-index: 10;
+            pointer-events: none; background: #0f1115; }
     </style>
 </head>
 <body>
-    <div id="compose-root"><div id="loading">Cargando Monitor Bolsa…</div></div>
+    <div id="loading">Cargando Monitor Bolsa…</div>
+    <div id="compose-root"></div>
+    <script>
+    new MutationObserver(function (m, o) {
+        if (document.querySelector('#compose-root canvas')) {
+            o.disconnect();
+            requestAnimationFrame(function () {
+                requestAnimationFrame(function () {
+                    var d = document.getElementById('loading');
+                    if (d) d.style.display = 'none';
+                });
+            });
+        }
+    }).observe(document.getElementById('compose-root'), { childList: true });
+    </script>
     <script src="app.js"></script>
 </body>
 </html>
